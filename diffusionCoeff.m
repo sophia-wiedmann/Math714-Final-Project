@@ -18,9 +18,11 @@ sz = size(greyVol);
 xdim = sz(1);
 ydim = sz(2);
 zdim = sz(3);
+dim = max(sz);
 
-% Initialize diffusion coefficient matrix
-D = zeros(xdim,ydim,zdim);
+% Initialize diffusion coefficient matrix as square matrix using max
+% dimension
+D = zeros(dim, dim, dim);
 
 % Compute diffusion coefficent for each cell
 for x = 1:xdim
