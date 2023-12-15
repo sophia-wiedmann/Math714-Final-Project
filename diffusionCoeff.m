@@ -8,21 +8,18 @@ function D = diffusionCoeff(greyVol,whiteVol)
     % (x,y,z) computed based on percentage of grey and white matter (0
     % everywhere else)
 
+% MRI data dimensions
+global xdim
+global ydim
+global zdim
 
 % Tissue-specific diffusion coefficients (need to update)
 D_grey = 1;
 D_white = 1;
 
-% Get dimensions of greyVol
-sz = size(greyVol);
-xdim = sz(1);
-ydim = sz(2);
-zdim = sz(3);
-dim = max(sz);
-
 % Initialize diffusion coefficient matrix as square matrix using max
 % dimension
-D = zeros(dim, dim, dim);
+D = zeros(xdim, ydim, zdim);
 
 % Compute diffusion coefficent for each cell
 for x = 1:xdim
