@@ -8,7 +8,6 @@ global ydim
 % global zdim
 global h
 
-hfac = 1/(2*h^2);
 zStart = -72;
 zval = z-zStart;
 
@@ -22,7 +21,6 @@ sz = [xdim, ydim];
 numNonzero = 5*numPoints;
 D2 = spalloc(numPoints,numPoints,numNonzero);
 
-%for ijk = 10000:11000
 for ijk = 1:numPoints
     % Get (x,y,z) coordinates for point
     %[i, j, k] = ind2sub(sz, ijk);
@@ -30,7 +28,7 @@ for ijk = 1:numPoints
 
     % Update diagonal entry of D2
     %D2(ijk,ijk) = -6*hfac;
-    D2(ijk,ijk) = -4*hfac;
+    D2(ijk,ijk) = -4;
 
     % Indices of neighbors
     if i+1 <= xdim
@@ -84,8 +82,7 @@ for ijk = 1:numPoints
             % point = [nbr_x, nbr_y, nbr_z];
             [nbr_x, nbr_y] = ind2sub(sz,neighbor);
             point = [nbr_x, nbr_y, zval];
-        else % Neighbor is outside grid
-            point = [1, 1, 1]; % just assign a random point
+        else point = [1, 1, 1]; % just assign a random point
         end
         isGhost = (isBoundary(point) | neighbor == 0);
         isNotGhost = (isGhost == 0);
@@ -94,7 +91,7 @@ for ijk = 1:numPoints
         neighbor = isNotGhost*neighbor + isGhost*ijk; 
 
         % Update row ijk of D2
-        D2(ijk,neighbor) = D2(ijk,neighbor) + 1*hfac;
+        D2(ijk,neighbor) = D2(ijk,neighbor) + 1;
     end
 end
 
