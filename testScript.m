@@ -11,14 +11,27 @@ global whiteVol
 
 % Constants
 global h
-global b
+%global b
 global k
 
 xdim = 181;
 ydim = 217;
-h = 0.225; % space step [m] % just for testing
-b = 0.55; % [m^2/s] % just for testing, will change this to D later
-k = 1/ceil(1/(h^2/(6*b))); % just for testing
+%h = 0.225; % space step [m] % just for testing
+%b = 0.55; % [m^2/s] % just for testing, will change this to D later
+%k = 1/ceil(1/(h^2/(6*b))); % just for testing
+
+% Tissue-specific diffusion coefficients from Table 11.6 in textbook
+    % Units are cm^2/day
+    % Tumor grading is high (HH), intermediate (HL), intermediate (LH),
+    % and low (LL)
+Dg = 1.3*10^(-3); % HH
+%Dg = 1.3*10^(-4); % HL
+%Dg = 1.3*10^(-3); % LH
+%Dg = 1.3*10^(-4); % LL
+Dw = 5*Dg; % max diffusion coefficient
+
+h = 0.1; % h = 1mm = 0.1cm
+k = 1/ceil(1/(h^2/(6*Dw))); % choose k <= h^2/(6*Dw)
 
 % Read in data
 readData
@@ -48,7 +61,6 @@ C_n = reshape(IC,numPoints,1);
 for t = 1:100
     C = C_n;
     C_n = solver(C,F);
-    %C_n = solver2(C,z); % for testing diffusion
 end
 
 % Reshape to matrix
