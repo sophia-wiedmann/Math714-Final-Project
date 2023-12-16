@@ -1,12 +1,16 @@
-function D = diffusionCoeff(greyVol,whiteVol,z)
+function D = diffusionCoeff(z,Dg)
 % Computes diffusion coefficient matrix D (2D matrix)
 
-% Inputs: greyVol and whiteVol are 3D matrices describing what percentage of
-    % each cell is grey (white) matter in range [0,1]
+% Inputs: z is measurement of slice in mm, Dg is diffusion coefficent for
+% grey matter
 
-% Output: 3D matrix D where D(x,y,z) is diffusion coefficient at point
+% Output: 2D matrix D where D(x,y,z) is diffusion coefficient at point
     % (x,y,z) computed based on percentage of grey and white matter (0
     % everywhere else)
+
+% MRI data
+global greyVol
+global whiteVol
 
 % MRI data dimensions
 global xdim
@@ -16,9 +20,11 @@ global ydim
 zStart = -72;
 zval = z-zStart;
 
-% Tissue-specific diffusion coefficients (need to update)
-D_grey = 1;
-D_white = 1;
+% Tissue-specific diffusion coefficients from Table 11.6 in textbook
+    % Units are cm^2/day
+    % Tumor grading is high (HH), intermediate (HL), intermediate (LH),
+    % and low (LL)
+Dw = 5*Dg;
 
 % Initialize diffusion coefficient matrix as square matrix using max
 % dimension
@@ -31,7 +37,7 @@ for x = 1:xdim
          % for z = 1:zdim
             greyVal = greyVol(x,y,zval);
             whiteVal = whiteVol(x,y,zval);
-            D(x,y) = greyVal*D_grey + whiteVal*D_white;
+            D(x,y) = greyVal*Dg + whiteVal*Dw;
         % end
     end
 end
