@@ -3,11 +3,11 @@ function D1 = buildGradient(z)
 % given z value (in mm)
 % Uses centered difference approximation for spatial derivative
 
-% MRI dimensions
+% Constants
 global xdim
 global ydim
-%global zdim
-global h
+% global zdim
+
 zStart = -72;
 zval = z-zStart;
 
@@ -16,12 +16,11 @@ zval = z-zStart;
 numPoints = xdim*ydim;
 sz = [xdim, ydim];
 
-% Initialize D1 as sparse matrix
-%numNonzero = 6*numPoints;
+% Initialize D2 as sparse matrix
+%numNonzero = 7*numPoints;
 numNonzero = 4*numPoints;
 D1 = spalloc(numPoints,numPoints,numNonzero);
 
-%for ijk = 10000:11000
 for ijk = 1:numPoints
     % Get (x,y,z) coordinates for point
     %[i, j, k] = ind2sub(sz, ijk);
@@ -79,8 +78,7 @@ for ijk = 1:numPoints
             % point = [nbr_x, nbr_y, nbr_z];
             [nbr_x, nbr_y] = ind2sub(sz,neighbor);
             point = [nbr_x, nbr_y, zval];
-        else % Neighbor is outside grid
-            point = [1, 1, 1]; % just assign a random point
+        else point = [1, 1, 1]; % just assign a random point
         end
         isGhost = (isBoundary(point) | neighbor == 0);
         isNotGhost = (isGhost == 0);
@@ -90,10 +88,10 @@ for ijk = 1:numPoints
     end
 
     % Update row ijk of D1
-    D1(ijk,neighbors(1)) = D1(ijk,neighbors(1)) + 1/h;
-    D1(ijk,neighbors(2)) = D1(ijk,neighbors(2)) - 1/h;
-    D1(ijk,neighbors(3)) = D1(ijk,neighbors(3)) + 1/h;
-    D1(ijk,neighbors(4)) = D1(ijk,neighbors(4)) - 1/h;
+    D1(ijk,neighbors(1)) = 1;
+    D1(ijk,neighbors(2)) = -1;
+    D1(ijk,neighbors(3)) = 1;
+    D1(ijk,neighbors(4)) = -1;
 end
 
 end
