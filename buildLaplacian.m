@@ -2,11 +2,13 @@ function D2 = buildLaplacian(z)
 % Builds square matrix D2 representing discretization of Laplacian in 2D at
 % given z value (in mm)
 
-
-% MRI dimensions
+% Constants
 global xdim
 global ydim
-%global zdim
+% global zdim
+global h
+
+hfac = 1/(2*h^2);
 zStart = -72;
 zval = z-zStart;
 
@@ -27,8 +29,8 @@ for ijk = 1:numPoints
     [i, j] = ind2sub(sz, ijk);
 
     % Update diagonal entry of D2
-    %D2(ijk,ijk) = -6;
-    D2(ijk,ijk) = -4;
+    %D2(ijk,ijk) = -6*hfac;
+    D2(ijk,ijk) = -4*hfac;
 
     % Indices of neighbors
     if i+1 <= xdim
@@ -92,7 +94,7 @@ for ijk = 1:numPoints
         neighbor = isNotGhost*neighbor + isGhost*ijk; 
 
         % Update row ijk of D2
-        D2(ijk,neighbor) = D2(ijk,neighbor) + 1;
+        D2(ijk,neighbor) = D2(ijk,neighbor) + 1*hfac;
     end
 end
 
