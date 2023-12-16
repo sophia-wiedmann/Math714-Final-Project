@@ -1,3 +1,5 @@
+
+%% Data and model parameters
 % Dimensions of MRI  data
 global xdim
 global ydim
@@ -16,9 +18,6 @@ global k
 
 xdim = 181;
 ydim = 217;
-%h = 0.225; % space step [m] % just for testing
-%b = 0.55; % [m^2/s] % just for testing, will change this to D later
-%k = 1/ceil(1/(h^2/(6*b))); % just for testing
 
 % Tissue-specific diffusion coefficients from Table 11.6 in textbook
     % Units are cm^2/day
@@ -45,15 +44,25 @@ numPoints = xdim*ydim;
 % Matrix for spatial discretization
 F = buildF(z);
 
-% Initial Condition (looks like small square in lower right of brain)
+%% Initial Condition (normal distribution -- see 11.9 in book)
+x0 = [111, 50, zval]; % center of tumor
+a = 1; % max density at center of tumor
+r = 3; % radius of tumor in mm
+cutoff = 0.01; % density at radius r
+b = -r^2/log(cutoff/a); % measure of spread so that cutoff condition is satisfied
+
+% Initialize IC
 IC = zeros(xdim,ydim);
 
-for x = 110:112
-    for y = 49:51
-        IC(x,y) = 10;
+% Compute IC at each grid point
+for x = 1:xdim
+    for y = 1:xdim
+        dist2 = (x-x0(1))^2 + (y-x0(2))^2; % squared distance to center of tumor
+        IC(x,y) = a*exp(-dist2/b);
     end
 end
 
+%% Simulate tumor growth
 % Initialize concentration vector
 C_n = reshape(IC,numPoints,1);
 
@@ -63,6 +72,8 @@ for t = 1:100
     C_n = solver(C,F);
 end
 
+
+%% Plot results
 % Reshape to matrix
 C_n = reshape(C_n,xdim,ydim);
 
