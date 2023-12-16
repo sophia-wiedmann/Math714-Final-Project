@@ -8,6 +8,8 @@ global greyVol
 global whiteVol
 global xdim
 global ydim
+global h
+global b
 
 % Constants
 zStart = -72;
@@ -19,14 +21,14 @@ D = diffusionCoeff(greyVol,whiteVol,zval);
 D = reshape(D,numPoints,1);
 D_diag = spdiags(D,0,numPoints,numPoints);
 
-D1 = buildGradient(zval);
-D2 = buildLaplacian(zval);
+D1 = buildGradient(z);
+D2 = buildLaplacian(z);
 
 gradD = D1*D;
 gradD_diag = spdiags(gradD,0,numPoints,numPoints);
 
-%F = D2;
+F = b/h^2*D2;
 %F = D2*D_diag; % treats D like a constant
-F = D1*gradD_diag + D2*D_diag; % treats D like D(x)
+%F = D1*gradD_diag + D2*D_diag; % treats D like D(x)
 
 end
