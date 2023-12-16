@@ -76,7 +76,7 @@ for ijk = 1:numPoints
     %neighbors = [i1jk im1jk ij1k ijm1k ijk1 ijkm1];
     neighbors = [i1jk im1jk ij1k ijm1k];
 
-    % Check if orthogonal neighbors are in the boundary and update F
+    % Check if orthogonal neighbors are in the boundary and update D2
     for index = 1:length(neighbors)
         neighbor = neighbors(index);
         if neighbor ~= 0 % Neighbor is in grid
