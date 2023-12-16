@@ -61,8 +61,12 @@ for ijk = 1:numPoints
     % Check if orthogonal neighbors are in the boundary and update F
     for index = 1:length(neighbors)
         neighbor = neighbors(index);
-        [nbr_x, nbr_y, nbr_z] = ind2sub(sz,neighbor);
-        point = [nbr_x, nbr_y, nbr_z];
+        if neighbor ~= 0 % Neighbor is in grid
+            [nbr_x, nbr_y, nbr_z] = ind2sub(sz,neighbor);
+            point = [nbr_x, nbr_y, nbr_z];
+        else % Neighbor is outside grid
+            point = [1, 1, 1]; % just assign a random point
+        end
         isGhost = (isBoundary(point) | neighbor == 0);
         isNotGhost = (isGhost == 0);
 
