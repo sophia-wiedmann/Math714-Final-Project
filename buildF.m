@@ -33,14 +33,22 @@ D = reshape(D,numPoints,1);
 D_diag = spdiags(D,0,numPoints,numPoints);
 
 % Discretizations of derivatives
-D1 = buildGradient(z);
+D1 = buildGradient(z); 
 D2 = buildLaplacian(z);
 
-gradD = D1*D;
+gradD = 1/h*D1*D; % graph looks good, range is about +/- 0.15
+% Graph to test gradD
+% gradD = reshape(gradD,xdim,ydim);
+% figure;
+% s = pcolor(gradD');
+% s.FaceColor = 'interp';
+% colorbar;
+% title("gradD");
+% axis image
 gradD_diag = spdiags(gradD,0,numPoints,numPoints);
 
 %F = b/h^2*D2; % constant diffusion
-F = 1/h^2*D2*D_diag; % treats D like a constant, but depends on tissue type
-%F = D1*gradD_diag + D2*D_diag; % treats D like D(x)
+%F = 1/h^2*D2*D_diag; % treats D like a constant, but depends on tissue type
+F = 1/h*D1*gradD_diag + 1/h^2*D2*D_diag; % treats D like D(x)
 
 end
