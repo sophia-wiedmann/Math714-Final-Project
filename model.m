@@ -23,6 +23,9 @@ s = 10^6;
 rho = .3;
 R_0 = 250 * 10^(-4)
 
+readData
+D = diffusionCoeff(greyVol, whiteVol);
+
 for i = 1:m
     for j = 1:n
         for k = 1:p

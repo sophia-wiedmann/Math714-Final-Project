@@ -22,7 +22,7 @@ numNonzero = 4*numPoints;
 D1 = spalloc(numPoints,numPoints,numNonzero);
 
 for ijk = 1:numPoints
-    % Get (x,y,z) coordinates for point
+    % Get (x,y,z) coordinates for poibuildGradient(z)nt
     %[i, j, k] = ind2sub(sz, ijk);
     [i, j] = ind2sub(sz, ijk);
 
