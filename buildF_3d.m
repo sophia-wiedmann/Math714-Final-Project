@@ -39,7 +39,7 @@ D_diag = spdiags(D,0,numPoints,numPoints);
  
 D2 = buildLaplacian_3d;
 D1 = buildGradient_3d;
-save('D1')
+save('/Matricies/D1')
 save('D2')
 gradD = 1/(2*h)*D1*D; % graph looks good, range is about +/- 0.15
 % Graph to test gradD
@@ -55,6 +55,6 @@ gradD_diag = spdiags(gradD,0,numPoints,numPoints);
 %F = b/h^2*D2; % constant diffusion
 %F = 1/h^2*D2*D_diag; % treats D like a constant, but depends on tissue type
 F = 1/(2*h)*D1*gradD_diag + 1/h^2*D2*D_diag; % treats D like D(x)
-save('F')
+save('/Matricies/F')
 58
 end
