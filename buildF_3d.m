@@ -27,10 +27,9 @@ Dg = 1.3*10^(-3); % HH
 %Dg = 1.3*10^(-4); % HL
 %Dg = 1.3*10^(-3); % LH
 %Dg = 1.3*10^(-4); % LL
-numPoints
+
 % Diffusion coefficient D(x)
 D = diffusionCoeff_3d(Dg);
-size(D)
 D = reshape(D,numPoints,1);
 
 D_diag = spdiags(D,0,numPoints,numPoints);

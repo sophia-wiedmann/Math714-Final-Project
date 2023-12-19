@@ -45,6 +45,10 @@ gradD = 1/(2*h)*D1*D; % graph looks good, range is about +/- 0.15
  colorbar;
  title("gradD");
  axis image
+size(gradD)
+numPoints
+
+gradD = reshape(gradD, numPoints, 1);
 gradD_diag = spdiags(gradD,0,numPoints,numPoints);
 
 %F = b/h^2*D2; % constant diffusion

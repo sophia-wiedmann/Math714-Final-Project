@@ -44,6 +44,14 @@ numPoints = xdim*ydim;
 % Matrix for spatial discretization
 F = buildF(z);
 
+% Relevant data for plotting
+greyData = greyVol(:,:,zval);
+whiteData = whiteVol(:,:,zval);
+skullData = skullVol(:,:,zval);
+greyData = greyData';
+whiteData = whiteData';
+skullData = skullData';
+
 %% Initial Condition (normal distribution -- see 11.9 in book)
 x0 = [111, 50, zval]; % center of tumor
 a = 1; % max density at center of tumor
@@ -66,10 +74,21 @@ end
 % Initialize concentration vector
 C_n = reshape(IC,numPoints,1);
 
-% Simulate for 100 time steps
-for t = 1:100
+% Simulate for 365 time steps
+for t = 1:365
+    t
     C = C_n;
     C_n = solver(C,F);
+    if mod(t, 30) == 1
+    figure;
+    s = pcolor(reshape(C_n,xdim,ydim)');
+    s.FaceColor = 'interp';
+    axis image
+    fn = append("tumor_images/2d/tumor2d",num2str(t, '%04d'), '.png');
+    saveas(gcf, fn);
+    close(gcf)
+    clear plot
+    end
 end
 
 
@@ -114,16 +133,13 @@ colorbar;
 title("Initial Condition");
 axis image
 
-figure;
-s = pcolor(C_n');
-s.FaceColor = 'interp';
-colorbar;
-title("Tumor");
-axis image
 
 figure;
-s = pcolor(greyData + C_n');
+s = pcolor(greyData -whiteData);
 s.FaceColor = 'interp';
-colorbar;
-title("Grey Matter and Tumor");
+colormap("bone");
 axis image
+
+
+
+

@@ -19,7 +19,7 @@ global rho
 global chem_kill_rate
 global rad_kill_rate
 
-plot = true;
+plot = false;
 treat = true;
 
 xdim = 181;
@@ -42,7 +42,7 @@ rho = 1.2*10^(-2); % HH
 %rho = 1.2*10^(-3); % LL
 
 chem_kill_rate = .06;
-rad_kill_rate = .9;
+rad_kill_rate = 1;
 
 detection_threshold = 0.0019;
 
@@ -60,9 +60,9 @@ numPoints = xdim*ydim*zdim;
 load('Matricies/F.mat');
 
 %% Initial Condition (normal distribution -- see 11.9 in book)
-x0 = [111, 50, 111]; % center of tumor
+x0 = [111, 100, 111]; % center of tumor
 a = 1; % max density at center of tumor
-r = 8.3; % radius of tumor in mm
+r = 10; % radius of tumor in mm
 cutoff = 0.01; % density at radius r
 b = -r^2/log(cutoff/a); % measure of spread so that cutoff condition is satisfied
 
@@ -80,7 +80,7 @@ for x = 1:xdim
 end
 
 
-%% Plot IC
+% Plot IC
         % Grab just the data where the tumor concentration is > threshold
         X = [];
         Y = [];
@@ -122,6 +122,10 @@ end
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
+                xlabel('x (mm)')
+                ylabel('y (mm)')
+                zlabel('z (mm)')
+                title('Concentration of Tumor','t = 0')
                 fname = append('tumor_images/tumorstill0000.png');
                 saveas(gcf, fname);
                 xlim([95, 125]);
@@ -147,6 +151,10 @@ end
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
+                xlabel('x (mm)')
+                ylabel('y (mm)')
+                zlabel('z (mm)')
+                title('Concentration of Tumor with Treatment','t = 0')
                 fname = append('tumor_images/treattumorstill0000.png');
                 saveas(gcf, fname);
                 xlim([95, 125]);
@@ -174,7 +182,7 @@ end
 C_n = reshape(IC,numPoints,1);
 t_0 = datetime
 % Simulate for 365 time steps
-for t = 1:365
+for t = 1:250
     if mod(t, 10) == 0
     t
     datetime - t_0
@@ -219,6 +227,10 @@ for t = 1:365
                 % Relevant data for plotting
                 
                 scatter3(X, Y, Z, val*100 ,'filled');
+                xlabel('x (mm)')
+                ylabel('y (mm)')
+                zlabel('z (mm)')
+                title('Concentration of Tumor', append('t = ', int2str(t)))
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
@@ -247,6 +259,10 @@ for t = 1:365
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
+                xlabel('x (mm)')
+                ylabel('y (mm)')
+                zlabel('z (mm)')
+                title('Concentration of Tumor with Treatment', append('t = ', int2str(t)))
                 fname = append('tumor_images/treattumorstill', num2str(t, '%04d'), '.png');
                 saveas(gcf, fname);
                 xlim([95, 125]);
