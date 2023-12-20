@@ -17,19 +17,15 @@ global xdim
 global ydim
 global zdim
 
-%zStart = -72;
-%zval = z-zStart;
-
 % Tissue-specific diffusion coefficients from Table 11.6 in textbook
-    % Units are cm^2/day
-    % Tumor grading is high (HH), intermediate (HL), intermediate (LH),
-    % and low (LL)
+% Units are cm^2/day
+% Tumor grading is high (HH), intermediate (HL), intermediate (LH),
+% and low (LL)
 Dw = 5*Dg;
 
 % Initialize diffusion coefficient matrix as square matrix using max
 % dimension
-% D = zeros(xdim, ydim, zdim);
-D = zeros(xdim, ydim);
+D = zeros(xdim, ydim, zdim);
 
 % Compute diffusion coefficent for each cell
 for x = 1:xdim
