@@ -39,7 +39,7 @@ else
 end
 
 
-v = rho*C - rho*C.^2 - R_ind * rad_kill_rate*C - C_ind * chem_kill_rate*C;
+v = rho*C - rho*C.^2/max(C) - R_ind * rad_kill_rate*C - C_ind * chem_kill_rate*C;
 B = I + k*F  + spdiags(v, 0, numPoints, numPoints );
 C_np1 = B*C; % explicity get C^(n+1)
 C_np1(C_np1<0) = 0; % don't let concentration fall below zero

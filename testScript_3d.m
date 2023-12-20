@@ -20,7 +20,7 @@ global chem_kill_rate
 global rad_kill_rate
 
 plot = false;
-treat = true;
+treat = false;
 
 xdim = 181;
 ydim = 217;
@@ -30,8 +30,8 @@ zdim = 181;
     % Units are cm^2/day
     % Tumor grading is high (HH), intermediate (HL), intermediate (LH),
     % and low (LL)
-Dg = 1.3*10^(-3); % HH
-%Dg = 1.3*10^(-4); % HL
+%Dg = 1.3*10^(-3); % HH
+Dg = 1.3*10^(-4); % HL
 %Dg = 1.3*10^(-3); % LH
 %Dg = 1.3*10^(-4); % LL
 Dw = 5*Dg; % max diffusion coefficient
@@ -44,7 +44,7 @@ rho = 1.2*10^(-2); % HH
 chem_kill_rate = .06;
 rad_kill_rate = 1;
 
-detection_threshold = 0.0019;
+detection_threshold = 40000;
 
 h = 0.1; % h = 1mm = 0.1cm
 k = 1/ceil(1/(h^2/(6*Dw))); % choose k <= h^2/(6*Dw)
@@ -60,12 +60,12 @@ numPoints = xdim*ydim*zdim;
 load('Matricies/F.mat');
 
 %% Initial Condition (normal distribution -- see 11.9 in book)
-x0 = [111, 100, 111]; % center of tumor
-a = 1; % max density at center of tumor
-r = 10; % radius of tumor in mm
-cutoff = 0.01; % density at radius r
-b = -r^2/log(cutoff/a); % measure of spread so that cutoff condition is satisfied
-
+x0 = [111, 51, 111]; % center of tumor
+a = 700; % max density at center of tumor
+r = 15; % radius of tumor in mm
+%cutoff = 300; % density at radius r
+%b = -r^2/log(cutoff/a); % measure of spread so that cutoff condition is satisfied
+b = 5.68;
 % Initialize IC
 IC = zeros(xdim,ydim,zdim);
 
@@ -103,7 +103,7 @@ end
         end
 
         r = findRadius(X, Y, Z);
-        tot_concent = sum(C_n, "all");
+        tot_concent = sum(C_n, "all")*0;
         if treat
             rad_arr_treat = [double(0.0), r, tot_concent]
         else
@@ -141,7 +141,7 @@ end
                 saveas(gcf, fname);
                 xlim([95, 125]);
                 ylim([35, 65]);
-                zlim([100, 130]);;
+                zlim([100, 130]);
                 fname2 = append('tumor_images/tumorzoom0000.png');
                 saveas(gcf, fname2);
                 az = az + 1;
@@ -182,7 +182,7 @@ end
 C_n = reshape(IC,numPoints,1);
 t_0 = datetime
 % Simulate for 365 time steps
-for t = 1:250
+for t = 1:150
     if mod(t, 10) == 0
     t
     datetime - t_0
@@ -214,6 +214,7 @@ for t = 1:250
         
         r = findRadius(X, Y, Z);
         tot_concent = sum(C_n, "all");
+
         if treat
             rad_arr_treat = [rad_arr_treat; t, r, tot_concent];
         else

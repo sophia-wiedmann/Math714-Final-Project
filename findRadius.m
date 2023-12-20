@@ -1,4 +1,7 @@
 function radius = findRadius(X,Y,Z)
+    if length(X) == 0
+        radius = 0
+    else
 
     arr = [X(:), Y(:), Z(:)];
     %D = pdist2(arr, arr);
@@ -12,6 +15,7 @@ function radius = findRadius(X,Y,Z)
     %top100Values = sortedValues(1:100);
     %radius = sortedValues(floor(length(X)*.0075));
     radius = max(distancesToCenter);
+    end
 
 
 
