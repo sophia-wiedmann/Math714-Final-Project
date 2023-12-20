@@ -30,8 +30,8 @@ zdim = 181;
     % Units are cm^2/day
     % Tumor grading is high (HH), intermediate (HL), intermediate (LH),
     % and low (LL)
-%Dg = 1.3*10^(-3); % HH
-Dg = 1.3*10^(-4); % HL
+Dg = 1.3*10^(-3); % HH
+%Dg = 1.3*10^(-4); % HL
 %Dg = 1.3*10^(-3); % LH
 %Dg = 1.3*10^(-4); % LL
 Dw = 5*Dg; % max diffusion coefficient
