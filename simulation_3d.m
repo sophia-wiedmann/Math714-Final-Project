@@ -1,5 +1,8 @@
+global plot
+global treat
 
-plot = true;
+%% Input Parameters
+plot = false;
 treat = true;
 
 %% Tumor grade
@@ -22,6 +25,7 @@ elseif type == 4
     Dg = 1.3*10^(-4)*10^2; % LL
 else disp("Type must be an integer between 1 and 4")
 end
+Dw = 5*Dg; % max diffusion coefficient
 
 
 %% Data and model parameters
@@ -39,7 +43,6 @@ global whiteVol
 
 % Constants
 global h
-%global b
 global k
 global rho
 global chem_kill_rate
@@ -57,6 +60,7 @@ detection_threshold = 400;
 h = 1; % h = 1mm = 0.1cm
 k = 1/ceil(1/(h^2/(6*Dw))); % choose k <= h^2/(6*Dw)
 az = -37.5;
+
 % Read in data
 readData
 
@@ -68,6 +72,7 @@ numPoints = xdim*ydim*zdim;
 load('Matricies/F.mat');
 kill_time = 600;
 detect_time = 600;
+
 %% Initial Condition (normal distribution -- see 11.9 in book)
 x0 = [111, 51, 111]; % center of tumor
 a = 1600; % max density at center of tumor
@@ -130,7 +135,7 @@ end
         if plot
             if ~treat
                 % Relevant data for plotting
-                scatter3(X, Y, Z, log(val + 1)/20 ,'filled');
+                scatter3(X, Y, Z, log(val + 1)/100 + 1 ,'filled');
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
@@ -149,7 +154,7 @@ end
                 az = az + 1;
             else
                 % Relevant data for plotting
-                scatter3(X, Y, Z, log(val + 1)/20 ,'filled');
+                scatter3(X, Y, Z, log(val + 1)/100 + 1 ,'filled');
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);
@@ -178,6 +183,7 @@ for t = 1:365/k
     C = C_n;
     C_n = solver_3d(C,F, t*k, treat);
     if mod(k*t, 1) == 0 % Only plot or compute volume if time is an integer
+        t*k
         %% Plot results
         % Grab just the data where the tumor concentration is > 10^-6
         X = [];
@@ -221,7 +227,7 @@ for t = 1:365/k
             if ~treat
                 % Relevant data for plotting
                 
-                scatter3(X, Y, Z, log(val + 1)/20 ,'filled');
+                scatter3(X, Y, Z, log(val + 1)/100 + 1 ,'filled');
                 xlabel('x (mm)')
                 ylabel('y (mm)')
                 zlabel('z (mm)')
@@ -240,7 +246,7 @@ for t = 1:365/k
                 az = az + 1;
             else
                 % Relevant data for plotting
-                scatter3(X, Y, Z, log(val + 1)/20 ,'filled');
+                scatter3(X, Y, Z, log(val + 1)/100 + 1,'filled');
                 xlim([0, 181]);
                 ylim([0, 218]);
                 zlim([0, 181]);

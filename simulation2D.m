@@ -32,6 +32,7 @@ global skullVol
 global backgroundVol
 global greyVol
 global whiteVol
+global CSFVol
 
 % Model constants
 global h
@@ -101,13 +102,14 @@ for t = 1:timesteps
     C_n = explicitSolver(z,rho,C,D,gradD);
     
     % Plot results every 10 days
-    if mod(t*k,10) == 0
+    if t*k == 1
         % Reshape to matrix for plotting
         C_n = reshape(C_n,xdim,ydim);
 
         % Get time in days
         time = string(t*k);
         text = "Tumor after " + time + " days";
+        fn = "tumor_images/2d/2dtumor" + num2str(t*k, '%04d') + ".png"
         
         % Plot
         figure;
@@ -116,6 +118,8 @@ for t = 1:timesteps
         colorbar;
         title(text);
         axis image
+        saveas(gcf, fn);
+
 
         % Reshape to vector to continue solving
         C_n = reshape(C_n,numPoints,1);
