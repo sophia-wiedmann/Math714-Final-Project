@@ -43,7 +43,7 @@ ydim = 217;
 zdim = 181;
 numPoints = xdim*ydim;
 Dw = 5*Dg; % diffusion in white matter
-h = 0.1; % h = 1mm = 0.1cm
+h = 1; % h = 1mm = 0.1cm
 k = 1/ceil(1/(h^2/(6*Dw))); % choose k <= h^2/(6*Dw)
 
 % Read in data
@@ -54,18 +54,19 @@ z = 28; % this can be changed to another slice (in mm)
 zStart = -72;
 zval = z-zStart;
 
-% % Diffusion coefficient matrix D(x)
-% D = diffusionCoeff(z,Dg);
-% D = reshape(D,numPoints,1);
-% 
-% % Discretizations of D(D(x))
-% D1 = buildGradient(z);
-% gradD = 1/(2*h)*D1*D;
+% Diffusion coefficient D(x)
+D = diffusionCoeff(z,Dg);
+D = reshape(D,numPoints,1);
+
+% Discretizations of D(D(x))
+D1 = buildGradient(z); 
+gradD = 1/(2*h)*D1*D;
+gradD = reshape(gradD, numPoints, 1);
 
 % Matrix representing discretized differential equation
 F = buildF(z,type);
 
-%% Initial Condition (normal distribution -- see 11.9 in book)
+%% Initial Condition (normal distribution)
 x0 = [111, 50, zval]; % center of tumor
 a = 5; % max concentration at center of tumor
 r = 5; % radius of tumor in mm
@@ -80,7 +81,6 @@ for x = 1:xdim
     for y = 1:ydim
         % squared distance to center of tumor
         dist2 = (x-x0(1))^2 + (y-x0(2))^2; 
-
         % Compute initial tumor distribution
         IC(x,y) = a*exp(-dist2/b);
     end
@@ -91,18 +91,17 @@ end
 C_n = reshape(IC,numPoints,1);
 
 % How many days to simulate
-days = 100;
+days = 365;
 timesteps = days/k;
 
 % Simulate for given number of days
-tic
 for t = 1:timesteps
     C = C_n;
-    %C_n = explicitSolver(z,C,D,gradD);
-    C_n = solver(C,F);
+    %C_n = solver(C,F);
+    C_n = explicitSolver(z,rho,C,D,gradD);
     
-    % Plot results every 30 days
-    if mod(t*k,30) == 0
+    % Plot results every 10 days
+    if mod(t*k,10) == 0
         % Reshape to matrix for plotting
         C_n = reshape(C_n,xdim,ydim);
 
@@ -122,11 +121,12 @@ for t = 1:timesteps
         C_n = reshape(C_n,numPoints,1);
     end
 end
-toc
 
 %% Plot results
 % Reshape final solution to matrix
 C_n = reshape(C_n,xdim,ydim);
+time = string(t*k);
+text = "Tumor after " + time + " days";
 
 % Relevant data for plotting
 greyData = greyVol(:,:,zval);
@@ -152,22 +152,22 @@ title("White Matter");
 axis image
 
 figure;
-s = pcolor(skullData);
+s = pcolor(skullData+C_n');
 s.FaceColor = 'interp';
 colorbar;
-title("Skull");
+title("Skull with Tumor");
 axis image
 
 figure;
 s = pcolor(IC');
 s.FaceColor = 'interp';
 colorbar;
-title("Initial Condition");
+title("Tumor at 0 days");
 axis image
 
 figure;
-s = pcolor(greyData + C_n');
+s = pcolor(C_n');
 s.FaceColor = 'interp';
 colorbar;
-title("Grey Matter and Tumor");
+title(text);
 axis image
