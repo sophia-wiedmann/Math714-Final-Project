@@ -1,6 +1,5 @@
 function test = isBoundary(point)
-% Checks if a gridpoint is in the boundary (skull or background) -- should
-% include ventricles?
+% Checks if a gridpoint is in the anatomic boundary
 % Inputs: point = [x, y, z] is gridpoint being checked, skullVol and
     % backgroundVol contain locations of boundary as determined by readData
 % Output: test = 1 if it's a boundary gridpoint (0 if not)
@@ -15,7 +14,7 @@ global skullVol
 global backgroundVol
 
 % Set threshold levels for determining boundaries
-skull_threshold = 0.1; % need to decide what these values should be
+skull_threshold = 0.1;
 background_threshold = 0.1;
 
 % Coordinates of gridpoint
