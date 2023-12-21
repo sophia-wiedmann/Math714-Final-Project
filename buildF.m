@@ -39,6 +39,8 @@ gradD = 1/(2*h)*D1*D;
 gradD = reshape(gradD, numPoints, 1);
 gradD_diag = spdiags(gradD,0,numPoints,numPoints);
 
-F = 1/(2*h)*D1*gradD_diag + 1/h^2*D2*D_diag;
+I = speye(numPoints);
+
+F = 1/(2*h)*D1*gradD_diag + 1/h^2*D2*D_diag + rho*I;
 
 end
