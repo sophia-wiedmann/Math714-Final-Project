@@ -69,6 +69,8 @@ F = buildF(z,type);
 
 %% Initial Condition (normal distribution)
 x0 = [111, 50, zval]; % center of tumor
+%x0 = [150, 32, zval]; % center of tumor in grey matter
+%x0 = [70, 143, zval]; % center of tumor in white matter
 a = 5; % max concentration at center of tumor
 r = 5; % radius of tumor in mm
 cutoff = 1; % concentration at radius r
@@ -92,14 +94,14 @@ end
 C_n = reshape(IC,numPoints,1);
 
 % How many days to simulate
-days = 365;
+days = 10;
 timesteps = days/k;
 
 % Simulate for given number of days
 for t = 1:timesteps
     C = C_n;
-    %C_n = solver(C,F);
-    C_n = explicitSolver(z,rho,C,D,gradD);
+    C_n = solver(C,F);
+    %C_n = explicitSolver(z,rho,C,D,gradD);
     
     % Plot results every 10 days
     if t*k == 1
@@ -109,7 +111,6 @@ for t = 1:timesteps
         % Get time in days
         time = string(t*k);
         text = "Tumor after " + time + " days";
-        fn = "tumor_images/2d/2dtumor" + num2str(t*k, '%04d') + ".png"
         
         % Plot
         figure;
@@ -118,8 +119,6 @@ for t = 1:timesteps
         colorbar;
         title(text);
         axis image
-        saveas(gcf, fn);
-
 
         % Reshape to vector to continue solving
         C_n = reshape(C_n,numPoints,1);
@@ -145,7 +144,14 @@ figure;
 s = pcolor(greyData+IC');
 s.FaceColor = 'interp';
 colorbar;
-title("Grey Matter with Initial Condition");
+title("Grey Matter with Tumor at 0 days");
+axis image
+
+figure;
+s = pcolor(greyData+C_n');
+s.FaceColor = 'interp';
+colorbar;
+title("Grey Matter with " + text);
 axis image
 
 figure;
@@ -156,10 +162,17 @@ title("White Matter");
 axis image
 
 figure;
+s = pcolor(greyData);
+s.FaceColor = 'interp';
+colorbar;
+title("Grey Matter");
+axis image
+
+figure;
 s = pcolor(skullData+C_n');
 s.FaceColor = 'interp';
 colorbar;
-title("Skull with Tumor");
+title("Skull with " + text);
 axis image
 
 figure;
