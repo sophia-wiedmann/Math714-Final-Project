@@ -3,7 +3,7 @@ global treat
 
 %% Input Parameters
 plot = false;
-treat = true;
+treat = false;
 
 %% Tumor grade
 % Grading of tumor (1 = HH, 2 = HL, 3 = LH, 4 = LL)
